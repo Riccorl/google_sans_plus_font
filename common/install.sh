@@ -103,6 +103,7 @@ miui() {
 		sed -i '/\"mipro-bold\"/,/family>/{/400/,/>/s/MiLanProVF/Bold/;/700/,/>/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
 		sed -i '/\"mipro-heavy\"/,/family>/{/400/,/>/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
 		sed -ie 3's/$/-miui&/' $MODPROP
+		PART=1
 	fi
 }
 
@@ -138,14 +139,15 @@ ui_print "   "
 ui_print "- Installing"
 
 mkdir -p $SYSFONT $SYSETC $PRDFONT
-patch
+
+rom
 
 case $PART in
 	1 ) full;;
 	2 ) headline; sed -ie 3's/$/-hf&/' $MODPROP;;
 esac
 
-rom
+patch
 
 ### CLEAN UP ###
 ui_print "- Cleaning up"
