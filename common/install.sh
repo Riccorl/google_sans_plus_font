@@ -6,9 +6,6 @@ SYSXML=$SYSETC/fonts.xml
 MODPROP=$MODPATH/module.prop
 
 patch() {
-	# umount /system/etc/fonts.xml
-	# cp /system/etc/fonts.xml $SYSXML
-	cp /sbin/.magisk/mirror/system/etc/fonts.xml $SYSXML
 	if [ $PART -eq 1 ]; then
 		sed -i '/\"sans-serif\">/i \
 	<family name="sans-serif">\
@@ -140,7 +137,8 @@ ui_print "   "
 ui_print "- Installing"
 
 mkdir -p $SYSFONT $SYSETC $PRDFONT
-patch
+# cp /system/etc/fonts.xml $SYSXML
+cp /sbin/.magisk/mirror/system/etc/fonts.xml $SYSXML
 
 case $PART in
 	1 ) full;;
@@ -148,6 +146,7 @@ case $PART in
 esac
 
 rom
+patch
 
 ### CLEAN UP ###
 ui_print "- Cleaning up"
