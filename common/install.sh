@@ -8,7 +8,8 @@ MODPROP=$MODPATH/module.prop
 patch() {
 	umount /system/etc/fonts.xml
 	cp /system/etc/fonts.xml $SYSXML
-	sed -i '/\"sans-serif\">/i \
+	if [ $PART -eq 1 ]; then
+		sed -i '/\"sans-serif\">/i \
 	<family name="sans-serif">\
 		<font weight="100" style="normal">Thin.ttf</font>\
 		<font weight="100" style="italic">ThinItalic.ttf</font>\
@@ -23,8 +24,25 @@ patch() {
 		<font weight="700" style="normal">Bold.ttf</font>\
 		<font weight="700" style="italic">BoldItalic.ttf</font>\
 	</family>' $SYSXML
+		sed -i 's/RobotoCondensed/Condensed/' $SYSXML
+	else
+		sed -i '/\"sans-serif\">/i \
+	<family name="sans-serif">\
+		<font weight="100" style="normal">Roboto-Thin.ttf</font>\
+		<font weight="100" style="italic">Roboto-ThinItalic.ttf</font>\
+		<font weight="300" style="normal">Roboto-Light.ttf</font>\
+		<font weight="300" style="italic">Roboto-LightItalic.ttf</font>\
+		<font weight="400" style="normal">Roboto-Regular.ttf</font>\
+		<font weight="400" style="italic">Roboto-Italic.ttf</font>\
+		<font weight="500" style="normal">Medium.ttf</font>\
+		<font weight="500" style="italic">MediumItalic.ttf</font>\
+		<font weight="900" style="normal">Black.ttf</font>\
+		<font weight="900" style="italic">BlackItalic.ttf</font>\
+		<font weight="700" style="normal">Bold.ttf</font>\
+		<font weight="700" style="italic">BoldItalic.ttf</font>\
+	</family>' $SYSXML
+	fi
 	sed -i ':a;N;$!ba; s/ name=\"sans-serif\"//2' $SYSXML
-	sed -i 's/RobotoCondensed/Condensed/' $SYSXML
 }
 
 headline() { cp $FONTDIR/hf/*ttf $SYSFONT; }
