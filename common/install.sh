@@ -6,6 +6,7 @@ SYSXML=$SYSETC/fonts.xml
 MODPROP=$MODPATH/module.prop
 
 patch() {
+	cp $ORIGDIR/system/etc/fonts.xml $SYSXML
 	sed -i '/\"sans-serif\">/i \
 	<family name="sans-serif">\
 		<font weight="100" style="normal">Roboto-Thin.ttf</font>\
@@ -14,25 +15,30 @@ patch() {
 		<font weight="300" style="italic">Roboto-LightItalic.ttf</font>\
 		<font weight="400" style="normal">Roboto-Regular.ttf</font>\
 		<font weight="400" style="italic">Roboto-Italic.ttf</font>\
-		<font weight="500" style="normal">Medium.ttf</font>\
-		<font weight="500" style="italic">MediumItalic.ttf</font>\
-		<font weight="900" style="normal">Black.ttf</font>\
-		<font weight="900" style="italic">BlackItalic.ttf</font>\
-		<font weight="700" style="normal">Bold.ttf</font>\
-		<font weight="700" style="italic">BoldItalic.ttf</font>\
+		<font weight="500" style="normal">Roboto-Medium.ttf</font>\
+		<font weight="500" style="italic">Roboto-MediumItalic.ttf</font>\
+		<font weight="900" style="normal">Roboto-Black.ttf</font>\
+		<font weight="900" style="italic">Roboto-BlackItalic.ttf</font>\
+		<font weight="700" style="normal">Roboto-Bold.ttf</font>\
+		<font weight="700" style="italic">Roboto-BoldItalic.ttf</font>\
 	</family>' $SYSXML
-	sed -i ':a;N;$!ba; s/ name=\"sans-serif\"//2' $SYSXML
-	if [ $PART -eq 1 ]; then
-		sed -i '/\"sans-serif\">/,/family>/s/Roboto-//' $SYSXML
-		sed -i 's/RobotoCondensed/Condensed/' $SYSXML
-	fi
+	sed -i ':a;N;$!ba; s/name=\"sans-serif\"//2' $SYSXML
 }
 
-headline() { cp $FONTDIR/hf/*ttf $SYSFONT; }
+headline() {
+	cp $FONTDIR/hf/*ttf $SYSFONT
+	sed -i '/\"sans-serif\">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
+}
 
-body() { cp $FONTDIR/bf/*ttf $SYSFONT; }
+body() {
+	cp $FONTDIR/bf/*ttf $SYSFONT 
+	sed -i '/\"sans-serif\">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $SYSXML
+}
 
-condensed() { cp $FONTDIR/cf/*ttf $SYSFONT; }
+condensed() {
+	cp $FONTDIR/cf/*ttf $SYSFONT
+	sed -i 's/RobotoC/C/' $SYSXML
+}
 
 full() { headline; body; condensed; }
 
@@ -127,8 +133,8 @@ ui_print "   "
 ui_print "- Installing"
 
 mkdir -p $SYSFONT $SYSETC $PRDFONT
-# cp /system/etc/fonts.xml $SYSXML
-cp /sbin/.magisk/mirror/system/etc/fonts.xml $SYSXML
+
+patch
 
 case $PART in
 	1 ) full;;
@@ -136,7 +142,6 @@ case $PART in
 esac
 
 rom
-patch
 
 ### CLEAN UP ###
 ui_print "- Cleaning up"
