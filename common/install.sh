@@ -43,8 +43,13 @@ condensed() {
 full() { headline; body; condensed; }
 
 text() {
-	cp $FONTDIR/tx/bf/*ttf $SYSFONT
-	cp $FONTDIR/tx/cf/*ttf $SYSFONT
+	if [ $HF -eq 2 ]; then
+		cp $FONTDIR/tx/hf/*ttf $SYSFONT
+	fi
+	if [ $BF -eq 2 ]; then
+		cp $FONTDIR/tx/bf/*ttf $SYSFONT
+		cp $FONTDIR/tx/cf/*ttf $SYSFONT
+	fi
 }
 
 cleanup() {
@@ -59,7 +64,16 @@ pixel() {
 		DEST=$SYSFONT
 	fi
 	if [ ! -z $DEST ]; then
-		cp $FONTDIR/px/*ttf $DEST
+		if [ $HF -eq 2 ]; then
+			cp $FONTDIR/tx/bf/Regular.ttf $DEST/GoogleSans-Regular.ttf
+			cp $FONTDIR/tx/bf/Italic.ttf $DEST/GoogleSans-Italic.ttf
+			cp $SYSFONT/Medium.ttf $DEST/GoogleSans-Medium.ttf
+			cp $SYSFONT/MediumItalic.ttf $DEST/GoogleSans-MediumItalic.ttf
+			cp $SYSFONT/Bold.ttf $DEST/GoogleSans-Bold.ttf
+			cp $SYSFONT/BoldItalic.ttf $DEST/GoogleSans-BoldItalic.ttf
+		else
+			cp $FONTDIR/px/*ttf $DEST
+		fi
 		sed -ie 3's/$/-pxl&/' $MODPROP
 	fi
 }
@@ -112,10 +126,11 @@ rom() { pixel; oxygen; miui; }
 
 OPTION=false
 PART=1
-STYLE=1
+HF=1
+BF=1
 
 ui_print "   "
-ui_print "- Enable OPTION?"
+ui_print "- Enable OPTIONS?"
 ui_print "  Vol+ = Yes; Vol- = No"
 ui_print "   "
 if $VKSEL; then
@@ -147,7 +162,29 @@ if $OPTION; then
 	done
 	ui_print "   "
 	ui_print "  Selected: $PART"
-	
+
+	ui_print "   "
+	ui_print "- Which HEADLINE font style?"
+	ui_print "  Vol+ = Select; Vol- = OK"
+	ui_print "   "
+	ui_print "  1. Default"
+	ui_print "  2. Text"
+	ui_print "   "
+	ui_print "  Select:"
+	while true; do
+		ui_print "  $HF"
+		if $VKSEL; then
+			HF=$((HF + 1))
+		else 
+			break
+		fi
+		if [ $HF -gt 2 ]; then
+			HF=1
+		fi
+	done
+	ui_print "   "
+	ui_print "  Selected: $HF"
+
 	if [ $PART -eq 1 ]; then
 		ui_print "   "
 		ui_print "- Which BODY font style?"
@@ -158,18 +195,18 @@ if $OPTION; then
 		ui_print "   "
 		ui_print "  Select:"
 		while true; do
-			ui_print "  $STYLE"
+			ui_print "  $BF"
 			if $VKSEL; then
-				STYLE=$((STYLE + 1))
+				BF=$((BF + 1))
 			else 
 				break
 			fi
-			if [ $STYLE -gt 2 ]; then
-				STYLE=1
+			if [ $BF -gt 2 ]; then
+				BF=1
 			fi
 		done
 		ui_print "   "
-		ui_print "  Selected: $STYLE"
+		ui_print "  Selected: $BF"
 	fi
 fi
 
@@ -185,8 +222,12 @@ case $PART in
 	2 ) headline; sed -ie 3's/$/-hf&/' $MODPROP;;
 esac
 
-case $STYLE in
-	2 ) text; sed -ie 3's/$/-txt&/' $MODPROP;;
+case $HF in
+	2 ) text; sed -ie 3's/$/-hftxt&/' $MODPROP;;
+esac
+
+case $BF in
+	2 ) text; sed -ie 3's/$/-bftxt&/' $MODPROP;;
 esac
 
 rom
