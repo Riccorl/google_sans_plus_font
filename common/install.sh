@@ -43,8 +43,8 @@ condensed() {
 full() { headline; body; condensed; }
 
 text() {
-	cp $FONTDIR/txt/bf/*ttf $SYSFONT
-	cp $FONTDIR/txt/cf/*ttf $SYSFONT
+	cp $FONTDIR/tx/bf/*ttf $SYSFONT
+	cp $FONTDIR/tx/cf/*ttf $SYSFONT
 }
 
 cleanup() {
