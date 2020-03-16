@@ -42,6 +42,11 @@ condensed() {
 
 full() { headline; body; condensed; }
 
+text() {
+	cp $FONTDIR/txt/bf/*ttf $SYSFONT
+	cp $FONTDIR/txt/cf/*ttf $SYSFONT
+}
+
 cleanup() {
 	rm -rf $FONTDIR
 	rmdir -p $SYSETC $PRDFONT
@@ -105,40 +110,83 @@ rom() { pixel; oxygen; miui; }
 
 ### SELECTIONS ###
 
+OPTION=false
 PART=1
+STYLE=1
+
 ui_print "   "
-ui_print "- WHERE to install?"
-ui_print "  Vol+ = Select; Vol- = Ok"
+ui_print "- Enable OPTION?"
+ui_print "  Vol+ = Yes; Vol- = No"
 ui_print "   "
-ui_print "  1. Full"
-ui_print "  2. Headline"
-ui_print "   "
-ui_print "  Select:"
-while true; do
-	ui_print "  $PART"
-	if $VKSEL; then
-		PART=$((PART + 1))
-	else 
-		break
+if $VKSEL; then
+	OPTION=true	
+	ui_print "  Selected: Yes"
+else
+	ui_print "  Selected: No"	
+fi
+
+if $OPTION; then
+	ui_print "   "
+	ui_print "- WHERE to install?"
+	ui_print "  Vol+ = Select; Vol- = Ok"
+	ui_print "   "
+	ui_print "  1. Full"
+	ui_print "  2. Headline"
+	ui_print "   "
+	ui_print "  Select:"
+	while true; do
+		ui_print "  $PART"
+		if $VKSEL; then
+			PART=$((PART + 1))
+		else 
+			break
+		fi
+		if [ $PART -gt 2 ]; then
+			PART=1
+		fi
+	done
+	ui_print "   "
+	ui_print "  Selected: $PART"
+	
+	if [ $PART -eq 1 ]; then
+		ui_print "   "
+		ui_print "- Which BODY font style?"
+		ui_print "  Vol+ = Select; Vol- = OK"
+		ui_print "   "
+		ui_print "  1. Default"
+		ui_print "  2. Text"
+		ui_print "   "
+		ui_print "  Select:"
+		while true; do
+			ui_print "  $STYLE"
+			if $VKSEL; then
+				STYLE=$((STYLE + 1))
+			else 
+				break
+			fi
+			if [ $STYLE -gt 2 ]; then
+				STYLE=1
+			fi
+		done
+		ui_print "   "
+		ui_print "  Selected: $STYLE"
 	fi
-	if [ $PART -gt 2 ]; then
-		PART=1
-	fi
-done
-ui_print "   "
-ui_print "  Selected: $PART"
+fi
 
 ### INSTALLATION ###
 ui_print "   "
 ui_print "- Installing"
 
 mkdir -p $SYSFONT $SYSETC $PRDFONT
-
 patch
 
 case $PART in
 	1 ) full;;
 	2 ) headline; sed -ie 3's/$/-hf&/' $MODPROP;;
+esac
+
+case $STYLE in
+	2 ) text; sed -ie 3's/$/-txt&/' $MODPROP;;
 esac
 
 rom
