@@ -219,7 +219,7 @@ if $OPTION; then
 	fi
 fi
 
-if [ $PART -eq 1 ]; then
+if [ $PART -eq 1 ] && $OPTION; then
 	ui_print "   "
 	ui_print "- Enable ADVANCED options?"
 	ui_print "  Vol+ = Yes; Vol- = No"
