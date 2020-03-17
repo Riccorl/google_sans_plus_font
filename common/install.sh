@@ -53,10 +53,21 @@ text() {
 }
 
 bold() {
-	cp $SYSFONT/Medium.ttf $SYSFONT/Regular.ttf
-	cp $SYSFONT/MediumItalic.ttf $SYSFONT/Italic.ttf
-	cp $SYSFONT/Condensed-Medium.ttf $SYSFONT/Condensed-Regular.ttf
-	cp $SYSFONT/Condensed-MediumItalic.ttf $SYSFONT/Condensed-Italic.ttf
+ 	cp $SYSFONT/Medium.ttf $SYSFONT/Regular.ttf
+ 	cp $SYSFONT/MediumItalic.ttf $SYSFONT/Italic.ttf
+ 	cp $SYSFONT/Regular.ttf $SYSFONT/Light.ttf
+ 	cp $SYSFONT/Italic.ttf $SYSFONT/LightItalic.ttf
+ 	cp $SYSFONT/Regular.ttf $SYSFONT/Thin.ttf
+ 	cp $SYSFONT/Italic.ttf $SYSFONT/ThinItalic.ttf
+ 	cp $SYSFONT/Condensed-Medium.ttf $SYSFONT/Condensed-Regular.ttf
+ 	cp $SYSFONT/Condensed-MediumItalic.ttf $SYSFONT/Condensed-Italic.ttf
+ 	cp $SYSFONT/Condensed-Regular.ttf $SYSFONT/Condensed-Light.ttf
+ 	cp $SYSFONT/Condensed-Italic.ttf $SYSFONT/Condensed-LightItalic.ttf
+}
+
+legible() {
+	SRC=$FONTDIR/bf/hl
+	cp $SRC/*ttf $SYSFONT
 }
 
 cleanup() {
@@ -81,7 +92,12 @@ pixel() {
 		else
 			cp $FONTDIR/px/*ttf $DEST
 		fi
+		if $BOLD; then
+			cp $DEST/GoogleSans-Medium.ttf $DEST/GoogleSans-Regular.ttf
+			cp $DEST/GoogleSans-MediumItalic.ttf $DEST/GoogleSans-Italic.ttf
+		fi
 		sed -ie 3's/$/-pxl&/' $MODPROP
+		PXL=true
 	fi
 }
 
@@ -95,6 +111,7 @@ oxygen() {
 		cp $SYSFONT/Light.ttf $SYSFONT/SlateForOnePlus-Light.ttf
 		cp $SYSFONT/Thin.ttf $SYSFONT/SlateForOnePlus-Thin.ttf
 		sed -ie 3's/$/-oos&/' $MODPROP
+		OOS=true
 	fi
 }
 
@@ -124,10 +141,17 @@ miui() {
 			sed -ie 3's/$/-miui&/' $MODPROP
 		fi	
 		sed -ie 3's/$/-miui&/' $MODPROP
+		MIUI=true
 	fi
 }
 
-rom() { pixel; oxygen; miui; }
+rom() {
+	pixel
+	if ! $PXL; then oxygen
+		if ! $OOS; then miui
+		fi
+	fi
+}
 
 ### SELECTIONS ###
 
@@ -135,8 +159,8 @@ OPTION=false
 PART=1
 HF=1
 BF=1
-ADVOPT=false
 BOLD=false
+LEGIBLE=false
 
 ui_print "   "
 ui_print "- Enable OPTIONS?"
@@ -150,6 +174,7 @@ else
 fi
 
 if $OPTION; then
+
 	ui_print "   "
 	ui_print "- WHERE to install?"
 	ui_print "  Vol+ = Select; Vol- = Ok"
@@ -217,34 +242,33 @@ if $OPTION; then
 		ui_print "   "
 		ui_print "  Selected: $BF"
 	fi
-fi
 
-if [ $PART -eq 1 ] && $OPTION; then
-	ui_print "   "
-	ui_print "- Enable ADVANCED options?"
-	ui_print "  Vol+ = Yes; Vol- = No"
-	ui_print "   "
-	if $VKSEL; then
-		ADVOPT=true	
-		ui_print "  Selected: Yes"
-	else
-		ui_print "  Selected: No"	
-	fi
-fi
-
-if $ADVOPT; then
-
-	ui_print "   "
-	ui_print "- Use BOLD font?"
-	ui_print "  Vol+ = Yes; Vol- = No"
-	ui_print "   "
-	if $VKSEL; then
-		BOLD=true	
-		ui_print "  Selected: Yes"
-	else
-		ui_print "  Selected: No"	
+	if [ $HF -eq $BF ]; then
+		ui_print "   "
+		ui_print "- Use BOLD font?"
+		ui_print "  Vol+ = Yes; Vol- = No"
+		ui_print "   "
+		if $VKSEL; then
+			BOLD=true	
+			ui_print "  Selected: Yes"
+		else
+			ui_print "  Selected: No"	
+		fi
 	fi
 
+	if [ $BF -eq 1 ] && ! $BOLD; then
+		ui_print "   "
+		ui_print "- High Legibility?"
+		ui_print "  Vol+ = Yes; Vol- = No"
+		ui_print "   "
+		if $VKSEL; then
+			LEGIBLE=true
+			ui_print "  Selected: Yes"
+		else
+			ui_print "  Selected: No"	
+		fi
+	fi
+	
 fi
 
 ### INSTALLATION ###
@@ -268,9 +292,14 @@ case $BF in
 esac
 
 if $BOLD; then
-	bold; sed -ie 3's/$/-bold&/' $MODPROP
+	bold; sed -ie 3's/$/-bld&/' $MODPROP
 fi
 
+if $LEGIBLE; then
+	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
+fi
+
+PXL=false; OOS=false; MIUI=false
 rom
 
 ### CLEAN UP ###
