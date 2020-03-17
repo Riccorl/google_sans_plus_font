@@ -52,6 +52,13 @@ text() {
 	fi
 }
 
+bold() {
+	cp $SYSFONT/Medium.ttf $SYSFONT/Regular.ttf
+	cp $SYSFONT/MediumItalic.ttf $SYSFONT/Italic.ttf
+	cp $SYSFONT/Condensed-Medium.ttf $SYSFONT/Condensed-Regular.ttf
+	cp $SYSFONT/Condensed-MediumItalic.ttf $SYSFONT/Condensed-Italic.ttf
+}
+
 cleanup() {
 	rm -rf $FONTDIR
 	rmdir -p $SYSETC $PRDFONT
@@ -128,6 +135,8 @@ OPTION=false
 PART=1
 HF=1
 BF=1
+ADVOPT=false
+BOLD=false
 
 ui_print "   "
 ui_print "- Enable OPTIONS?"
@@ -210,6 +219,34 @@ if $OPTION; then
 	fi
 fi
 
+if [ $PART -eq 1 ]; then
+	ui_print "   "
+	ui_print "- Enable ADVANCED options?"
+	ui_print "  Vol+ = Yes; Vol- = No"
+	ui_print "   "
+	if $VKSEL; then
+		ADVOPT=true	
+		ui_print "  Selected: Yes"
+	else
+		ui_print "  Selected: No"	
+	fi
+fi
+
+if $ADVOPT; then
+
+	ui_print "   "
+	ui_print "- Use BOLD font?"
+	ui_print "  Vol+ = Yes; Vol- = No"
+	ui_print "   "
+	if $VKSEL; then
+		BOLD=true	
+		ui_print "  Selected: Yes"
+	else
+		ui_print "  Selected: No"	
+	fi
+
+fi
+
 ### INSTALLATION ###
 ui_print "   "
 ui_print "- Installing"
@@ -229,6 +266,10 @@ esac
 case $BF in
 	2 ) text; sed -ie 3's/$/-bftxt&/' $MODPROP;;
 esac
+
+if $BOLD; then
+	bold; sed -ie 3's/$/-bold&/' $MODPROP
+fi
 
 rom
 
