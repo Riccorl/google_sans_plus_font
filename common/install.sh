@@ -241,29 +241,27 @@ if $OPTION; then
 		done
 		ui_print "   "
 		ui_print "  Selected: $BF"
-	fi
 
-	if [ $PART -eq 1 ]; then
-		if [ $HF -eq $BF ]; then
-			ui_print "   "
-			ui_print "- Use BOLD font?"
-			ui_print "  Vol+ = Yes; Vol- = No"
-			ui_print "   "
-			if $VKSEL; then
-				BOLD=true	
-				ui_print "  Selected: Yes"
-			else
-				ui_print "  Selected: No"	
-			fi
-		fi
-	
-		if [ $BF -eq 1 ] && ! $BOLD; then
+		if [ $BF -eq 1 ]; then
 			ui_print "   "
 			ui_print "- High Legibility?"
 			ui_print "  Vol+ = Yes; Vol- = No"
 			ui_print "   "
 			if $VKSEL; then
 				LEGIBLE=true
+				ui_print "  Selected: Yes"
+			else
+				ui_print "  Selected: No"	
+			fi
+		fi
+
+		if [ $HF -eq $BF ] && ! $LEGIBLE; then
+			ui_print "   "
+			ui_print "- Use BOLD font?"
+			ui_print "  Vol+ = Yes; Vol- = No"
+			ui_print "   "
+			if $VKSEL; then
+				BOLD=true	
 				ui_print "  Selected: Yes"
 			else
 				ui_print "  Selected: No"	
