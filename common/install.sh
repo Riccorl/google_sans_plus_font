@@ -46,9 +46,7 @@ condensed() {
 full() { headline; body; condensed; }
 
 text() {
-	if [ $HF -eq 2 ]; then
-		cp $FONTDIR/tx/hf/*ttf $SYSFONT
-	fi
+	if [ $HF -eq 2 ]; then cp $FONTDIR/tx/hf/*ttf $SYSFONT; fi
 	if [ $BF -eq 2 ]; then
 		cp $FONTDIR/tx/bf/*ttf $SYSFONT
 		cp $FONTDIR/tx/cf/*ttf $SYSFONT
