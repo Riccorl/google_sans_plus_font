@@ -28,11 +28,14 @@ patch() {
 headline() {
 	cp $FONTDIR/hf/*ttf $SYSFONT
 	sed -i '/\"sans-serif\">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
+	sed -i 's/NotoSerif-//' $SYSXML
 }
 
 body() {
 	cp $FONTDIR/bf/*ttf $SYSFONT 
 	sed -i '/\"sans-serif\">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $SYSXML
+	sed -i 's/SourceSansPro-SemiBold/Medium/' $SYSXML
+	sed -i 's/SourceSansPro-//' $SYSXML
 }
 
 condensed() {
