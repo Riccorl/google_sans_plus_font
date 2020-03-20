@@ -192,8 +192,8 @@ OPTION=false
 PART=1
 HF=1
 BF=1
-BOLD=false
 LEGIBLE=false
+BOLD=false
 
 ui_print "   "
 ui_print "- Enable OPTIONS?"
