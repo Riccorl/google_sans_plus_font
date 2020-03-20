@@ -59,8 +59,7 @@ nsss() {
 	
 		if [ $PART -eq 1 ]; then
 			if i=$(grep SourceSansPro $SYSXML); then
-				sed -i 's/SourceSansPro-SemiBold/SSP-Medium/' $SYSXML
-				sed -i 's/SourceSansPro-/SSP-/' $SYSXML
+				sed -i 's/SourceSansPro-SemiBold/SSP-Medium/;s/SourceSansPro-/SSP-/' $SYSXML
 				SRC=$FONTDIR/hf
 				if [ $BF -eq 2 ]; then SRC=$FONTDIR/tx/hf; fi
 				cp $SRC/BoldItalic.ttf $SYSFONT/SSP-BoldItalic.ttf
@@ -86,16 +85,8 @@ text() {
 }
 
 bold() {
- 	cp $SYSFONT/Medium.ttf $SYSFONT/Regular.ttf
- 	cp $SYSFONT/MediumItalic.ttf $SYSFONT/Italic.ttf
- 	cp $SYSFONT/Regular.ttf $SYSFONT/Light.ttf
- 	cp $SYSFONT/Italic.ttf $SYSFONT/LightItalic.ttf
- 	cp $SYSFONT/Regular.ttf $SYSFONT/Thin.ttf
- 	cp $SYSFONT/Italic.ttf $SYSFONT/ThinItalic.ttf
- 	cp $SYSFONT/Condensed-Medium.ttf $SYSFONT/Condensed-Regular.ttf
- 	cp $SYSFONT/Condensed-MediumItalic.ttf $SYSFONT/Condensed-Italic.ttf
- 	cp $SYSFONT/Condensed-Regular.ttf $SYSFONT/Condensed-Light.ttf
- 	cp $SYSFONT/Condensed-Italic.ttf $SYSFONT/Condensed-LightItalic.ttf
+	sed -i '/\"sans-serif\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $SYSXML
+	sed -i '/\"sans-serif-condensed\">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
 }
 
 legible() {
