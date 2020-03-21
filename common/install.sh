@@ -314,12 +314,12 @@ case $BF in
 	2 ) text; sed -ie 3's/$/-bftxt&/' $MODPROP;;
 esac
 
-if $BOLD; then
-	bold; sed -ie 3's/$/-bld&/' $MODPROP
-fi
-
 if $LEGIBLE; then
 	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
+fi
+
+if $BOLD; then
+	bold; sed -ie 3's/$/-bld&/' $MODPROP
 fi
 
 PXL=false; OOS=false; MIUI=false
