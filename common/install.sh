@@ -280,7 +280,7 @@ if $OPTION; then
 
 			if [ $BOLD -eq 1 ]; then
 				ui_print "   "
-				ui_print "- How BOLD?"
+				ui_print "- How much BOLD?"
 				ui_print "  Vol+ = Select; Vol- = OK"
 				ui_print "   "
 				ui_print "  1. Light"
