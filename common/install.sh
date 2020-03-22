@@ -80,8 +80,14 @@ text() {
 }
 
 bold() {
-	sed -i '/\"sans-serif\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
-	sed -i '/\"sans-serif-condensed\">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
+	SRC=$FONTDIR/bf/bd
+	if [ $BF -eq 2 ]; then SRC=$FONTDIR/tx/bf/bd; fi
+	if [ $BOLD -eq 1 ]; then cp $SRC/25/* $SYSFONT
+	elif [ $BOLD -eq 2 ]; then cp $SRC/50/* $SYSFONT
+	else
+		sed -i '/\"sans-serif\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
+		sed -i '/\"sans-serif-condensed\">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
+	fi
 }
 
 legible() {
@@ -111,7 +117,7 @@ pixel() {
 		else
 			cp $FONTDIR/px/*ttf $DEST
 		fi
-		if $BOLD; then
+		if [ $BOLD -eq 3 ]; then
 			cp $DEST/GoogleSans-Medium.ttf $DEST/GoogleSans-Regular.ttf
 			cp $DEST/GoogleSans-MediumItalic.ttf $DEST/GoogleSans-Italic.ttf
 		fi
@@ -177,8 +183,8 @@ OPTION=false
 PART=1
 HF=1
 BF=1
+BOLD=0
 LEGIBLE=false
-BOLD=false
 
 ui_print "   "
 ui_print "- Enable OPTIONS?"
@@ -260,7 +266,45 @@ if $OPTION; then
 		ui_print "   "
 		ui_print "  Selected: $BF"
 
-		if [ $BF -eq 1 ]; then
+		if [ $HF -eq $BF ]; then
+			ui_print "   "
+			ui_print "- Use BOLD font?"
+			ui_print "  Vol+ = Yes; Vol- = No"
+			ui_print "   "
+			if $VKSEL; then
+				BOLD=1
+				ui_print "  Selected: Yes"
+			else
+				ui_print "  Selected: No"	
+			fi
+
+			if [ $BOLD -eq 1 ]; then
+				ui_print "   "
+				ui_print "- How BOLD?"
+				ui_print "  Vol+ = Select; Vol- = OK"
+				ui_print "   "
+				ui_print "  1. Light"
+				ui_print "  2. Medium"
+				ui_print "  3. Strong"
+				ui_print "   "
+				ui_print "  Select:"
+				while true; do
+					ui_print "  $BOLD"
+					if $VKSEL; then
+						BOLD=$((BOLD + 1))
+					else 
+						break
+					fi
+					if [ $BOLD -gt 3 ]; then
+						BOLD=1
+					fi
+				done
+				ui_print "   "
+				ui_print "  Selected: $BOLD"
+			fi
+		fi
+
+		if [ $BF -eq 1 ] && [ $BOLD -eq 0 ]; then
 			ui_print "   "
 			ui_print "- High Legibility?"
 			ui_print "  Vol+ = Yes; Vol- = No"
@@ -272,22 +316,8 @@ if $OPTION; then
 				ui_print "  Selected: No"	
 			fi
 		fi
-
-		if [ $HF -eq $BF ] && ! $LEGIBLE; then
-			ui_print "   "
-			ui_print "- Use BOLD font?"
-			ui_print "  Vol+ = Yes; Vol- = No"
-			ui_print "   "
-			if $VKSEL; then
-				BOLD=true	
-				ui_print "  Selected: Yes"
-			else
-				ui_print "  Selected: No"	
-			fi
-		fi
-	fi
-	
-fi
+	fi #PART1
+fi #OPTIONS
 
 ### INSTALLATION ###
 ui_print "   "
@@ -309,12 +339,12 @@ case $BF in
 	2 ) text; sed -ie 3's/$/-bftxt&/' $MODPROP;;
 esac
 
-if $LEGIBLE; then
-	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
+if [ $BOLD -ne 0 ]; then
+	bold; sed -ie 3's/$/-bld&/' $MODPROP
 fi
 
-if $BOLD; then
-	bold; sed -ie 3's/$/-bld&/' $MODPROP
+if $LEGIBLE; then
+	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
 fi
 
 PXL=false; OOS=false; MIUI=false
