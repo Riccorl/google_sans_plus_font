@@ -266,42 +266,44 @@ if $OPTION; then
 		ui_print "   "
 		ui_print "  Selected: $BF"
 
-		if [ $HF -eq $BF ]; then
-			ui_print "   "
-			ui_print "- Use BOLD font?"
-			ui_print "  Vol+ = Yes; Vol- = No"
-			ui_print "   "
-			if $VKSEL; then
-				BOLD=1
-				ui_print "  Selected: Yes"
-			else
-				ui_print "  Selected: No"	
-			fi
+		ui_print "   "
+		ui_print "- Use BOLD font?"
+		ui_print "  Vol+ = Yes; Vol- = No"
+		ui_print "   "
+		if $VKSEL; then
+			BOLD=1
+			ui_print "  Selected: Yes"
+		else
+			ui_print "  Selected: No"	
+		fi
 
-			if [ $BOLD -eq 1 ]; then
-				ui_print "   "
-				ui_print "- How much BOLD?"
-				ui_print "  Vol+ = Select; Vol- = OK"
-				ui_print "   "
-				ui_print "  1. Light"
-				ui_print "  2. Medium"
+		if [ $BOLD -eq 1 ]; then
+			ui_print "   "
+			ui_print "- How much BOLD?"
+			ui_print "  Vol+ = Select; Vol- = OK"
+			ui_print "   "
+			ui_print "  1. Light"
+			ui_print "  2. Medium"
+			if [ $HF -eq $BF ]; then
 				ui_print "  3. Strong"
-				ui_print "   "
-				ui_print "  Select:"
-				while true; do
-					ui_print "  $BOLD"
-					if $VKSEL; then
-						BOLD=$((BOLD + 1))
-					else 
-						break
-					fi
-					if [ $BOLD -gt 3 ]; then
-						BOLD=1
-					fi
-				done
-				ui_print "   "
-				ui_print "  Selected: $BOLD"
 			fi
+			ui_print "   "
+			ui_print "  Select:"
+			while true; do
+				ui_print "  $BOLD"
+				if $VKSEL; then
+					BOLD=$((BOLD + 1))
+				else 
+					break
+				fi
+				if [ $BOLD -gt 2 ] && [ $HF -ne $BF ]; then
+					BOLD=1
+				elif [ $BOLD -gt 3 ] ; then
+					BOLD=1
+				fi
+			done
+			ui_print "   "
+			ui_print "  Selected: $BOLD"
 		fi
 
 		if [ $BF -eq 1 ] && [ $BOLD -eq 0 ]; then
