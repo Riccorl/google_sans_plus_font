@@ -82,8 +82,8 @@ text() {
 bold() {
 	SRC=$FONTDIR/bf/bd
 	if [ $BF -eq 2 ]; then SRC=$FONTDIR/tx/bf/bd; fi
-	if [ $BOLD -eq 1 ]; then cp $SRC/25/* $SYSFONT
-	elif [ $BOLD -eq 2 ]; then cp $SRC/50/* $SYSFONT
+	if [ $BOLD -eq 1 ]; then cp $SRC/25/*ttf $SYSFONT
+	elif [ $BOLD -eq 2 ]; then cp $SRC/50/*ttf $SYSFONT
 	else
 		sed -i '/\"sans-serif\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
 		sed -i '/\"sans-serif-condensed\">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
@@ -127,7 +127,7 @@ pixel() {
 }
 
 oxygen() {
-	if [ -f /system/fonts/SlateForOnePlus-Regular.ttf ]; then
+	if [ -f $ORIGDIR/system/fonts/SlateForOnePlus-Regular.ttf ]; then
 		cp $SYSFONT/Black.ttf $SYSFONT/SlateForOnePlus-Black.ttf
 		cp $SYSFONT/Bold.ttf $SYSFONT/SlateForOnePlus-Bold.ttf
 		cp $SYSFONT/Medium.ttf $SYSFONT/SlateForOnePlus-Medium.ttf
