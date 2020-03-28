@@ -81,7 +81,7 @@ legible() {
 	cp $SRC/*ttf $SYSFONT
 }
 
-cleanup() {
+clean_up() {
 	rm -rf $FONTDIR
 	rmdir -p $SYSETC $PRDFONT
 }
@@ -358,6 +358,6 @@ rom
 
 ### CLEAN UP ###
 ui_print "- Cleaning up"
-cleanup
+clean_up
 
 ui_print "   "
